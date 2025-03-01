@@ -2,7 +2,6 @@ package com.codeflix.admin.catalog.domain.category;
 
 import com.codeflix.admin.catalog.domain.Identifier;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
