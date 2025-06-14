@@ -19,19 +19,38 @@ export class Category {
     this.category_id = props.category_id;
     this.name = props.name;
     this.description = props.description ?? null;
-    this.is_active = props.is_active ?? true; // Default to true if not provided
-    this.created_at = props.created_at ?? new Date(); // Default to current date if not provided
+    this.is_active = props.is_active ?? true;
+    this.created_at = props.created_at ?? new Date();
   }
 
   static create(props: CategoryCreateCommand): Category {
     return new Category(props);
   }
 
-  update(props: Partial<CategoryConstructorProps>): Category {
-    return new Category({
-        ...this,
-        ...props,
-    });
+  changeName(name: string): void {
+    this.name = name;
+  }
+
+  changeDescription(description: string | null): void {
+    this.description = description;
+  }
+
+  active(): void {
+    this.is_active = true;
+  }
+
+  deactive(): void {
+    this.is_active = false;
+  }
+
+  toJson(): CategoryConstructorProps {
+    return {
+      category_id: this.category_id,
+      name: this.name,
+      description: this.description,
+      is_active: this.is_active,
+      created_at: this.created_at
+    };
   }
 
 }
