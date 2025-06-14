@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: codeflix-admin
+    container_name: codeflix-admin
+    command: .docker/start.sh
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/app
