@@ -1,43 +1,37 @@
+import { EntityValidationError } from "../../../@shared/domain/validators/validation.error";
 import { Uuid } from "../../../@shared/domain/value-objects/uuid.vo";
 import { Category } from "../category.entity";
-Uuid
 
 describe('Category units tests', () => {
-  test('constructor of Category', () => {
-    const category = new Category({
-      name: 'Movie',
-      description: 'A movie category',
-      is_active: true,
-      created_at: new Date('2023-01-01T00:00:00Z'),
-    });
-
-    expect(category.category_id).toBeInstanceOf(Uuid);
-    expect(category.name).toBe('Movie');
-    expect(category.description).toBe('A movie category');
-    expect(category.is_active).toBe(true);
-    expect(category.created_at).toEqual(new Date('2023-01-01T00:00:00Z'));
+  let validateSpy: jest.SpyInstance;
+  beforeEach(() => {
+    validateSpy = jest.spyOn(Category, 'validate');
   });
+  describe("Create command", () => {
 
-  test('create method of Category', () => {
-    const category = Category.create({
-      name: 'Movie',
-      description: 'A movie category',
+    test('constructor of Category', () => {
+      const category = Category.create({
+        name: 'Movie',
+        description: 'A movie category',
+        is_active: true,
+      });
+
+      expect(category.category_id).toBeInstanceOf(Uuid);
+      expect(category.name).toBe('Movie');
+      expect(category.description).toBe('A movie category');
+      expect(category.is_active).toBe(true);
+      expect(validateSpy).toHaveBeenCalledTimes(1);
     });
-
-    expect(category.category_id).toBeDefined();
-    expect(category.name).toBe('Movie');
-    expect(category.description).toBe('A movie category');
-    expect(category.is_active).toBe(true);
-    expect(category.created_at).toBeInstanceOf(Date);
-  });
+  })
 
   test('changeName method of Category', () => {
-    const category = new Category({
+    const category = Category.create({
       name: 'Movie',
     });
 
     category.changeName('Documentary');
     expect(category.name).toBe('Documentary');
+    expect(validateSpy).toHaveBeenCalledTimes(2);
   });
 
   test('changeDescription method of Category', () => {
@@ -50,6 +44,7 @@ describe('Category units tests', () => {
 
     category.changeDescription(null);
     expect(category.description).toBeNull();
+    expect(validateSpy).toHaveBeenCalledTimes(2);
   });
 })
 
@@ -65,5 +60,26 @@ describe("category id field tests", () => {
     });
 
     expect(category.category_id).toBeInstanceOf(Uuid);
+
   })
 })
+
+describe("Category validator tests", () => {
+  describe("Create command", () => {
+    test('should throw error when name is empty', () => {
+      expect(() => {
+        Category.create({
+          name: null,
+          description: 'A movie category',
+          is_active: true,
+        });
+      }).toThrow(
+        new EntityValidationError({
+          name: ['Name is required'],
+        })
+
+      )
+    });
+  })
+
+  });
