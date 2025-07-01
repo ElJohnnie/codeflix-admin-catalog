@@ -77,9 +77,51 @@ describe("Category validator tests", () => {
         new EntityValidationError({
           name: ['Name is required'],
         })
-
       )
     });
-  })
-
+    test("should validate category with invalid name and use the custom assertions", () => {
+      expect(() => {
+        Category.create({
+          name: null,
+          description: 'A movie category',
+          is_active: true,
+        });
+      }).containsErrorMessages({
+        name: ["name should not be empty","name must be a string","name must be shorter than or equal to 255 characters"]
+      });
+    });
+    test("should validate category with invalid name and use the custom assertions", () => {
+      expect(() => {
+        Category.create({
+          name: "t".repeat(300),
+          description: 'A movie category',
+          is_active: true,
+        });
+      }).containsErrorMessages({
+        name: ["name must be shorter than or equal to 255 characters"]
+      });
+    });
+    test("should validate category with invalid name and use the custom assertions", () => {
+      expect(() => {
+        Category.create({
+          name: 5 as any,
+          description: 'A movie category',
+          is_active: true,
+        });
+      }).containsErrorMessages({
+        name: ["name must be a string", "name must be shorter than or equal to 255 characters"]
+      });
+    });
+    test("should validate category with invalid name and use the custom assertions", () => {
+      expect(() => {
+        Category.create({
+          description: 5 as any,
+          name: ""
+        });
+      }).containsErrorMessages({
+        description : ["description must be a string"]
+      });
+    });
   });
+    
+});
