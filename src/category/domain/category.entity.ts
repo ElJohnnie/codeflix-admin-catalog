@@ -34,7 +34,7 @@ export class Category extends Entity {
   }
 
   get entity_id(): ValueObject {
-    return this.category_id;np
+    return this.category_id;
   }
 
   static create(props: CategoryCreateCommand): Category {
