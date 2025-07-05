@@ -17,9 +17,11 @@ implements IRepository<E, EntityId> {
   async findById(entity_id: EntityId): Promise<E> {
     return this._get(entity_id);
   }
+
   async findAll(): Promise<E[]> {
    return this.items;
   }
+  
   async update(entity: E): Promise<void> {
      const index = this.items.findIndex(item => item.entity_id.equals(entity.entity_id));
       if (index !== -1) {
