@@ -13,7 +13,11 @@ type StubEntityConstructorProps = {
 
 class StubEntity extends Entity {
   toJson() {
-    throw new Error('Method not implemented.');
+    return {
+      id: this.entity_id.id,
+      name: this.name,
+      price: this.price,
+    };
   }
   entity_id: Uuid;
   name: string;
@@ -202,7 +206,84 @@ describe('InMemorySearchableRepository Unit Tests', () => {
       );
     });
 
-  
+    describe('should apply paginate and sort', () => {
+      const items = [
+        new StubEntity({ name: 'b', price: 5 }),
+        new StubEntity({ name: 'a', price: 5 }),
+        new StubEntity({ name: 'd', price: 5 }),
+        new StubEntity({ name: 'e', price: 5 }),
+        new StubEntity({ name: 'c', price: 5 }),
+      ];
+      const arrange = [
+        {
+          search_params: new SearchParams({
+            page: 1,
+            per_page: 2,
+            sort: 'name',
+          }),
+          search_result: new SearchResult({
+            items: [items[1], items[0]],
+            total: 5,
+            current_page: 1,
+            per_page: 2,
+          }),
+        },
+        {
+          search_params: new SearchParams({
+            page: 2,
+            per_page: 2,
+            sort: 'name',
+          }),
+          search_result: new SearchResult({
+            items: [items[4], items[2]],
+            total: 5,
+            current_page: 2,
+            per_page: 2,
+          }),
+        },
+        {
+          search_params: new SearchParams({
+            page: 1,
+            per_page: 2,
+            sort: 'name',
+            sort_dir: 'desc',
+          }),
+          search_result: new SearchResult({
+            items: [items[3], items[2]],
+            total: 5,
+            current_page: 1,
+            per_page: 2,
+          }),
+        },
+        {
+          search_params: new SearchParams({
+            page: 2,
+            per_page: 2,
+            sort: 'name',
+            sort_dir: 'desc',
+          }),
+          search_result: new SearchResult({
+            items: [items[4], items[0]],
+            total: 5,
+            current_page: 2,
+            per_page: 2,
+          }),
+        },
+      ];
+
+      beforeEach(() => {
+        repository.items = items;
+      });
+
+      test.each(arrange)(
+        'when value is %j',
+        async ({ search_params, search_result }) => {
+          const result = await repository.search(search_params);
+          expect(result).toStrictEqual(search_result);
+        },
+      );
+    });
+
     it('should search using filter, sort and paginate', async () => {
       const items = [
         new StubEntity({ name: 'test', price: 5 }),
