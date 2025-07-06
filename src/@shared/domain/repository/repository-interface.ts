@@ -15,11 +15,13 @@ export interface IRepository<E extends Entity, EntityId extends ValueObject> {
   getEntity(): new (...args: any[]) => E;
 }
 
-export  interface ISearchableRepository<E extends Entity, 
+export  interface ISearchableRepository<
+E extends Entity, 
 EntityId extends ValueObject, 
-SearchInput = SearchParams, 
+Filter = string,
+SearchInput = SearchParams<Filter>, 
 SearchOutput = SearchResult> 
-extends IRepository<Entity, ValueObject> {
+extends IRepository<E, EntityId> {
   sortableFields: string[];
   search(props: SearchInput): Promise<SearchOutput>
 }
