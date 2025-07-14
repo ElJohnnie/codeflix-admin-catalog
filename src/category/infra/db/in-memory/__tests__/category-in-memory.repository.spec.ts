@@ -1,6 +1,6 @@
-import { Uuid } from "../../../../@shared/domain/value-objects/uuid.vo";
-import { Category } from "../../../domain/category.entity";
-import { CategoryInMemoryRepository } from "../category-in-memory.repository";
+import { Uuid } from "../../../../../@shared/domain/value-objects/uuid.vo";
+import { Category } from "../../../../domain/category.entity";
+import { CategoryInMemoryRepository } from "../../in-memory/category-in-memory.repository";
 
 describe('CategoryInMemoryRepository', () => {
   let repository: CategoryInMemoryRepository;
