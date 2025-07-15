@@ -21,6 +21,7 @@ export class CategorySequelizeRepository implements ICategoryRepository {
       }
     );
   }
+  
   async bulkInsert(entities: Category[]): Promise<void> {
     await this.categoryModel.bulkCreate(
       entities.map(entity => ({
@@ -61,13 +62,16 @@ export class CategorySequelizeRepository implements ICategoryRepository {
 
   async findById(entity_id: Uuid): Promise<Category | null> {
     const model = await this._get(entity_id.id);
+    if (!model) {
+      throw new NotFoundError(entity_id, this.getEntity());
+    }
     return new Category({
       category_id: new Uuid(model.category_id),
       name: model.name,
       description: model.description,
       is_active: model.is_active,
       created_at: model.created_at,
-    })
+    });
   }
 
   async findAll(): Promise<Category[]> {
