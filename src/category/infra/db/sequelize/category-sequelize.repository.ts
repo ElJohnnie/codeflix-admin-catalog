@@ -63,7 +63,7 @@ export class CategorySequelizeRepository implements ICategoryRepository {
   async findById(entity_id: Uuid): Promise<Category | null> {
     const model = await this._get(entity_id.id);
     if (!model) {
-      throw new NotFoundError(entity_id, this.getEntity());
+      return null;
     }
     return new Category({
       category_id: new Uuid(model.category_id),
