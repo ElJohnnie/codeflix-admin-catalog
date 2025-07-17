@@ -2,28 +2,15 @@ import { Sequelize } from "sequelize-typescript";
 import { Category } from "../../../../domain/category.entity";
 import { CategorySequelizeRepository } from "../category-sequelize.repository";
 import { CategoryModel } from "../category.model";
+import { setupSequelize } from "../../../../../@shared/infra/testing/helpers";
 
 describe("CategorySequelizeRepository Integration Tests", () => {
-    let sequelize: Sequelize;
     let repository: CategorySequelizeRepository
+    repository = new CategorySequelizeRepository(CategoryModel);
   
-    beforeAll(async () => {
-      sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: ':memory:',
-        models: [CategoryModel],
-      });
-      await sequelize.sync({ force: true });
-      repository = new CategorySequelizeRepository(CategoryModel);
-    });
-  
-    beforeEach(async () => {
-      await CategoryModel.destroy({ where: {} });
-    });
-  
-    afterAll(async () => {
-      await sequelize.close();
-    });
+    setupSequelize({
+      models: [CategoryModel],
+    })
 
     test('should insert a category', async () => {
       const category = Category.fake().aCategory().build() as Category;
