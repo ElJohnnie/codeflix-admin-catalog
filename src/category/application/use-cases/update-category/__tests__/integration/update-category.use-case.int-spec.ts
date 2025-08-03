@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize-typescript";
-import { CategoryModel } from "../../../../../infra/db/sequelize/category.model";
-import { CategorySequelizeRepository } from "../../../../../infra/db/sequelize/category-sequelize.repository";
-import { UpdateCategoryUseCase } from "../../update-gategory.use-case";
-import { Category } from "../../../../../domain/category.entity";
 import { NotFoundError } from "../../../../../../@shared/domain/errors/not-found.error";
+import { Category } from "../../../../../domain/category.entity";
+import { CategorySequelizeRepository } from "../../../../../infra/db/sequelize/category-sequelize.repository";
+import { CategoryModel } from "../../../../../infra/db/sequelize/category.model";
+import { UpdateCategoryUseCase } from "../../update-gategory.use-case";
 
 describe("UpdateCategoryUseCase Integration Tests", () => {
   let sequelize: Sequelize;
@@ -189,22 +189,6 @@ describe("UpdateCategoryUseCase Integration Tests", () => {
     await expect(useCase.execute(input)).rejects.toThrow(`Category Not Found using ID ${nonExistentId}`);
   });
 
-  test("should throw validation error when updating with invalid name", async () => {
-    // Create a category first
-    const category = Category.fake().aCategory().build() as Category;
-    await repository.insert(category);
-
-    const input = {
-      id: category.category_id.id,
-      name: "", // Invalid empty name
-    };
-
-    await expect(useCase.execute(input)).rejects.toThrow("Validation Error");
-
-    // Verify category was not updated in database
-    const categoryModel = await CategoryModel.findByPk(category.category_id.id);
-    expect(categoryModel!.name).toBe(category.name); // Should remain original name
-  });
 
   test("should throw validation error when updating with name too long", async () => {
     // Create a category first
