@@ -45,13 +45,13 @@ export class Category extends Entity {
   }
 
   changeName(name: string): void {
-    Category.validate(this);
     this.name = name;
+    Category.validate(this);
   }
 
   changeDescription(description: string | null): void {
-    Category.validate(this);
     this.description = description;
+    Category.validate(this);
   }
 
   active(): void {
@@ -65,7 +65,6 @@ export class Category extends Entity {
   static validate(entity: Category) {
     const validator = CategoryValidatorFactory.create();
     const isValid = validator.validate(entity);
-    console.log(isValid)
     if (!isValid) {
       throw new EntityValidationError(validator.errors);
     }
